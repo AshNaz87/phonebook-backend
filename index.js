@@ -1,10 +1,7 @@
 const express = require('express')
-const cors = require('cors')
 const app = express()
-
-app.use(cors())
-app.use(express.json())
-app.use(express.static('build'))
+const cors = require('cors')
+const morgan = require("morgan");
 
 let persons = [
   {
@@ -29,12 +26,30 @@ let persons = [
   }
 ]
 
+morgan.token('person', (request, _response) => {
+  if (request.method === 'POST') return JSON.stringify(request.body)
+  return null;
+})
+
+app.use(cors())
+app.use(express.json())
+app.use(express.static('build'))
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
+
 const generateId = () => {
   return Math.ceil(Math.random() * 1000)
 }
 
 app.get('/api/persons', (_request, response) => {
   response.json(persons)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = +request.params.id
+  const person = persons.find(person => person.id === id)
+
+  person ? response.json(person): response.status(404).end()
 })
 
 app.get('/info', (_request, response) => {
@@ -50,19 +65,20 @@ app.post('/api/persons', (request, response) => {
 
   if (!body.name) {
     return response.status(404).json({
-      error: 'Name is missing'
+      error: "Name is missing"
     })
   }
-  
+
   if (!body.telNo) {
     return response.status(404).json({
-      error: 'Number is missing'
+      error: "Number is missing"
     })
   }
-  
+
+  // Check if person is added to phonebook
   if (persons.some(person => person.name === body.name)) {
-    return response.status(422).json({
-      error: 'Person already exists'
+    return response.status(400).json({
+      error: "Name must be unique"
     })
   }
 
@@ -71,17 +87,10 @@ app.post('/api/persons', (request, response) => {
     name: body.name,
     telNo: body.telNo
   }
-  
+
   persons = persons.concat(person)
-  
+
   response.json(persons)
-})
-
-app.get('/api/persons/:id', (request, response) => {
-  const id = +request.params.id
-  const person = persons.find(person => person.id === id)
-
-  person ? response.json(person): response.status(404).end()
 })
 
 app.delete('/api/persons/:id', (request, response) => {
