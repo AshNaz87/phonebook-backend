@@ -10,4 +10,6 @@ The objective is to get a running version of an app created using:
 - Node.js; and
 - Express
 
-and deploy it via Heroku.
+and deploy it on Heroku.
+
+The website can be accessed via the [link]( https://hidden-reef-36190.herokuapp.com).
