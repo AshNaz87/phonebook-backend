@@ -12,4 +12,4 @@ The objective is to get a running version of an app created using:
 
 and deploy it on Heroku.
 
-The website can be accessed via the [link]( https://hidden-reef-36190.herokuapp.com).
+The website can be accessed via [this link]( https://hidden-reef-36190.herokuapp.com).
