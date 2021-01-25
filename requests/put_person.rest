@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/600d925be066aa4de22b3ac3
+Content-Type: application/json
+
+{ 
+  "name": "Ashraf Nazar",
+  "telNo": "020 8575 3460"
+}
