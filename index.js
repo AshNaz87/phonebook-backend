@@ -22,7 +22,7 @@ app.use(
 
 app.get('/api/persons', (_request, response) => {
   Person.find({}).then(persons => {
-    response.json(persons)
+    response.json(persons.map(person => person.toJSON()))
   })
 })
 
@@ -30,7 +30,7 @@ app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
-        response.json(person)
+        response.json(person.toJSON())
       } else {
         response.status(404).end()
       }
@@ -49,7 +49,7 @@ app.get('/info', (_request, response) => {
   )
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name) {
@@ -69,7 +69,9 @@ app.post('/api/persons', (request, response) => {
     telNo: body.telNo,
   })
 
-  person.save().then(savedPerson => response.json(savedPerson))
+  person.save()
+    .then(savedPerson => response.json(savedPerson.toJSON()))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -80,8 +82,8 @@ app.put('/api/persons/:id', (request, response, next) => {
     telNo: body.telNo
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedPerson => response.json(updatedPerson))
+  Person.findOneAndUpdate(request.params.name, person, { runValidators: true, context: 'query', new: true })
+    .then(updatedPerson => response.json(updatedPerson.toJSON()))
     .catch(error => {
       console.log(error)
       next(error)
