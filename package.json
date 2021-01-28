@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../full-stack-open/part2/phone-book/ && npm run build && cp -r build ../../../phonebook-backend/",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "author": "Ashraf Nazar",
   "license": "ISC",
@@ -22,6 +23,8 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^7.18.0",
+    "eslint-plugin-react": "^7.22.0",
     "mongoose-unique-validator": "^2.0.3",
     "nodemon": "^2.0.7"
   }
